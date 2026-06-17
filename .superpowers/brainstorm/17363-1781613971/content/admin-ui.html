@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Plugin Manager — Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d1a; color: #e0e0f0; font-family: 'Inter', system-ui, sans-serif; padding: 20px; }
+  h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .subtitle { color: #888; font-size: 13px; margin-bottom: 20px; }
+
+  .app-shell {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #111120;
+    min-height: 520px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 180px;
+    background: #0a0a18;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    padding: 0 16px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #7c6af7;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-item {
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #777;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .sidebar-item.active {
+    color: #e0e0f0;
+    background: rgba(124,106,247,0.1);
+    border-left-color: #7c6af7;
+  }
+  .sidebar-section {
+    padding: 8px 16px 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #444;
+    margin-top: 8px;
+  }
+  .sidebar-plugin {
+    padding: 6px 16px 6px 28px;
+    font-size: 11px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+  .dot.off { background: #444; }
+
+  /* Main content */
+  .main { flex: 1; padding: 20px; overflow: auto; }
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .page-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: #7c6af7; color: #fff; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 5px; }
+  .btn-outline { background: transparent; color: #888; border: 1px solid rgba(255,255,255,0.12); }
+  .btn-danger-sm { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); border-radius: 5px; padding: 4px 10px; font-size: 11px; }
+
+  /* Search/filter */
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 7px;
+    padding: 7px 12px;
+    font-size: 12px;
+    color: #e0e0f0;
+    outline: none;
+  }
+  .filter-tab {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    background: transparent;
+    color: #666;
+    border: 1px solid transparent;
+  }
+  .filter-tab.active { background: rgba(124,106,247,0.15); color: #c4b8ff; border-color: rgba(124,106,247,0.3); }
+
+  /* Plugin cards */
+  .plugin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .plugin-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px;
+    transition: border-color 0.15s;
+  }
+  .plugin-card:hover { border-color: rgba(124,106,247,0.3); }
+  .plugin-card.enabled { border-left: 3px solid #4ade80; }
+  .plugin-card.disabled { border-left: 3px solid #444; opacity: 0.7; }
+
+  .plugin-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .plugin-icon-name { display: flex; align-items: center; gap: 8px; }
+  .plugin-icon { font-size: 20px; }
+  .plugin-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .plugin-version { font-size: 10px; color: #555; margin-top: 1px; }
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-on { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+  .badge-off { background: rgba(255,255,255,0.05); color: #555; border: 1px solid rgba(255,255,255,0.08); }
+
+  .plugin-desc { font-size: 11px; color: #888; line-height: 1.5; margin-bottom: 10px; }
+  .plugin-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .meta-tag {
+    font-size: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: #666;
+  }
+  .plugin-actions { display: flex; gap: 6px; }
+
+  /* Toggle switch */
+  .toggle {
+    width: 32px;
+    height: 18px;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .toggle.on { background: #4ade80; }
+  .toggle.off { background: #333; }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    top: 3px;
+    transition: left 0.2s;
+  }
+  .toggle.on::after { left: 17px; }
+  .toggle.off::after { left: 3px; }
+
+  /* Install modal area */
+  .install-panel {
+    margin-top: 16px;
+    background: rgba(124,106,247,0.06);
+    border: 1px dashed rgba(124,106,247,0.3);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .install-panel-title { font-size: 12px; font-weight: 600; color: #c4b8ff; margin-bottom: 8px; }
+  .install-row { display: flex; gap: 8px; align-items: center; }
+  .install-input {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 11px;
+    color: #e0e0f0;
+    font-family: monospace;
+    outline: none;
+  }
+</style>
+</head>
+<body>
+
+<h2>Admin UI — Plugin Manager Mockup</h2>
+<p class="subtitle">Quản trị viên bật/tắt và cài plugin qua đây — không cần restart server.</p>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">🧩 ERP Hub</div>
+    <div class="sidebar-item">🏠 Dashboard</div>
+    <div class="sidebar-item active">🔌 Plugins</div>
+    <div class="sidebar-item">👥 Users</div>
+    <div class="sidebar-item">⚙️ Settings</div>
+
+    <div class="sidebar-section">Active Plugins</div>
+    <div class="sidebar-plugin"><div class="dot"></div> CRM</div>
+    <div class="sidebar-plugin"><div class="dot"></div> LMS</div>
+    <div class="sidebar-plugin"><div class="dot off"></div> HR</div>
+    <div class="sidebar-plugin"><div class="dot off"></div> Accounting</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="page-header">
+      <div class="page-title">Plugin Manager</div>
+      <button class="btn btn-primary">＋ Install from Git</button>
+    </div>
+
+    <div class="toolbar">
+      <input class="search-input" placeholder="🔍  Tìm plugin..." value="">
+      <span class="filter-tab active">All (6)</span>
+      <span class="filter-tab">Active (2)</span>
+      <span class="filter-tab">Inactive (4)</span>
+    </div>
+
+    <div class="plugin-grid">
+
+      <!-- CRM - enabled -->
+      <div class="plugin-card enabled">
+        <div class="plugin-card-header">
+          <div class="plugin-icon-name">
+            <div class="plugin-icon">👥</div>
+            <div>
+              <div class="plugin-name">CRM</div>
+              <div class="plugin-version">v1.2.0 · local</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge badge-on">Active</span>
+            <button class="toggle on"></button>
+          </div>
+        </div>
+        <div class="plugin-desc">Quản lý khách hàng, pipeline bán hàng, theo dõi lead và deal.</div>
+        <div class="plugin-meta">
+          <span class="meta-tag">📄 3 pages</span>
+          <span class="meta-tag">🧩 2 slots</span>
+          <span class="meta-tag">🔑 contacts:write</span>
+        </div>
+        <div class="plugin-actions">
+          <button class="btn btn-sm btn-outline">⚙️ Config</button>
+          <button class="btn btn-sm btn-outline">📋 Logs</button>
+        </div>
+      </div>
+
+      <!-- LMS - enabled -->
+      <div class="plugin-card enabled">
+        <div class="plugin-card-header">
+          <div class="plugin-icon-name">
+            <div class="plugin-icon">📚</div>
+            <div>
+              <div class="plugin-name">LMS</div>
+              <div class="plugin-version">v2.0.1 · local</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge badge-on">Active</span>
+            <button class="toggle on"></button>
+          </div>
+        </div>
+        <div class="plugin-desc">Hệ thống quản lý học tập — khóa học, bài tập, học viên.</div>
+        <div class="plugin-meta">
+          <span class="meta-tag">📄 5 pages</span>
+          <span class="meta-tag">🧩 3 slots</span>
+          <span class="meta-tag">🔑 courses:write</span>
+        </div>
+        <div class="plugin-actions">
+          <button class="btn btn-sm btn-outline">⚙️ Config</button>
+          <button class="btn btn-sm btn-outline">📋 Logs</button>
+        </div>
+      </div>
+
+      <!-- HR - disabled -->
+      <div class="plugin-card disabled">
+        <div class="plugin-card-header">
+          <div class="plugin-icon-name">
+            <div class="plugin-icon">🏢</div>
+            <div>
+              <div class="plugin-name">HR Management</div>
+              <div class="plugin-version">v0.9.0 · git</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge badge-off">Inactive</span>
+            <button class="toggle off"></button>
+          </div>
+        </div>
+        <div class="plugin-desc">Quản lý nhân sự, chấm công, bảng lương, hợp đồng lao động.</div>
+        <div class="plugin-meta">
+          <span class="meta-tag">📄 4 pages</span>
+          <span class="meta-tag">🔑 employees:write</span>
+        </div>
+        <div class="plugin-actions">
+          <button class="btn btn-sm btn-outline">⚙️ Config</button>
+          <button class="btn btn-danger-sm">🗑 Remove</button>
+        </div>
+      </div>
+
+      <!-- Project - disabled -->
+      <div class="plugin-card disabled">
+        <div class="plugin-card-header">
+          <div class="plugin-icon-name">
+            <div class="plugin-icon">📋</div>
+            <div>
+              <div class="plugin-name">Project Management</div>
+              <div class="plugin-version">v1.1.0 · local</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge badge-off">Inactive</span>
+            <button class="toggle off"></button>
+          </div>
+        </div>
+        <div class="plugin-desc">Kanban board, sprint planning, task tracking cho các nhóm dự án.</div>
+        <div class="plugin-meta">
+          <span class="meta-tag">📄 3 pages</span>
+          <span class="meta-tag">🧩 1 slot</span>
+        </div>
+        <div class="plugin-actions">
+          <button class="btn btn-sm btn-outline">⚙️ Config</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Install panel -->
+    <div class="install-panel">
+      <div class="install-panel-title">⬇️ Cài plugin từ Git repository</div>
+      <div class="install-row">
+        <input class="install-input" placeholder="https://github.com/yourorg/plugin-accounting.git" value="">
+        <button class="btn btn-primary btn-sm">Clone & Install</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

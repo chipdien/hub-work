@@ -1,0 +1,63 @@
+<h2>Plugin mở rộng UI theo cách nào?</h2>
+<p class="subtitle">Chọn mô hình phù hợp nhất — ảnh hưởng đến cách developer viết plugin.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>📄 Page-only — Plugin = Trang mới</h3>
+      <p>Plugin chỉ thêm được route/page mới vào sidebar. Đơn giản, dễ kiểm soát.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Shell App</div>
+        <div class="mockup-body" style="display:flex;gap:0;padding:0;min-height:120px">
+          <div class="mock-sidebar" style="min-width:120px;font-size:11px;padding:8px">
+            🏠 Dashboard<br>
+            ─────────<br>
+            <span style="color:#7c6af7">📦 CRM ← plugin</span><br>
+            <span style="color:#7c6af7">📚 LMS ← plugin</span><br>
+            <span style="color:#7c6af7">📋 Tasks ← plugin</span>
+          </div>
+          <div class="mock-content" style="font-size:11px;padding:8px;flex:1">Plugin page rendered here<br><br><em style="opacity:0.5">Plugin không can thiệp được vào ngoài page của mình</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>🧩 Slot-based — Plugin inject vào slots</h3>
+      <p>Shell app định nghĩa các "slot" (vị trí). Plugin đăng ký component vào slot đó. Linh hoạt hơn nhiều.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Shell App — Dashboard</div>
+        <div class="mockup-body" style="padding:8px;font-size:11px;min-height:120px">
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <div style="border:1px dashed #7c6af7;padding:4px;border-radius:4px;flex:1;color:#7c6af7">slot: "dashboard.top"<br><em>← CRM plugin: Revenue Widget</em></div>
+            <div style="border:1px dashed #f7a46a;padding:4px;border-radius:4px;flex:1;color:#f7a46a">slot: "dashboard.top"<br><em>← LMS plugin: Course Widget</em></div>
+          </div>
+          <div style="border:1px dashed #6af7a4;padding:4px;border-radius:4px;color:#6af7a4">slot: "dashboard.bottom" ← Tasks plugin: My Tasks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>⚡ Full Extension — Pages + Slots + Hooks</h3>
+      <p>Plugin có thể: thêm trang, inject vào slots, đăng ký sidebar items, thêm menu actions, listen/emit events. Mạnh nhất — như VS Code extension model.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Shell App — Plugin API</div>
+        <div class="mockup-body" style="font-size:11px;padding:8px;min-height:120px">
+          <code style="display:block;background:rgba(0,0,0,0.3);padding:6px;border-radius:4px;line-height:1.8">
+            plugin.registerPage('/crm', CRMPage)<br>
+            plugin.registerSlot('dashboard.top', RevenueWidget)<br>
+            plugin.addSidebarItem({ label: 'CRM', icon: '👥' })<br>
+            plugin.onEvent('user.created', handler)<br>
+            plugin.addContextMenu('contact', actions)
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

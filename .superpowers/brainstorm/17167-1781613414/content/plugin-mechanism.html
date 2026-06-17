@@ -1,0 +1,38 @@
+<h2>Plugin hoạt động theo cơ chế nào?</h2>
+<p class="subtitle">Đây là quyết định kiến trúc quan trọng nhất — ảnh hưởng đến toàn bộ hệ thống.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>📦 Module-based (Static)</h3>
+      <p>Plugin được cài vào hệ thống lúc deploy (npm package, git submodule). Cần restart để kích hoạt. Đơn giản, ổn định, dễ kiểm soát. <strong>Như Odoo modules, Django apps.</strong></p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Dễ implement</li><li>Hiệu năng tốt</li><li>Type-safe</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Cần redeploy</li><li>Không hot-reload</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>⚡ Dynamic (Runtime)</h3>
+      <p>Plugin được bật/tắt trong lúc app đang chạy — không cần restart. Admin vào UI cài và dùng ngay. <strong>Như WordPress plugins, VS Code extensions.</strong></p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Linh hoạt</li><li>UX tốt hơn</li><li>Multi-tenant friendly</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Phức tạp hơn</li><li>Cần sandbox/isolation</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>🔌 Micro-frontend / Federated</h3>
+      <p>Mỗi plugin là một micro-app độc lập (React/Vue app riêng), được load vào shell app qua Module Federation. <strong>Như Backstage plugins.</strong></p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Team độc lập</li><li>Deploy riêng</li><li>Tech stack tự do</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Infrastructure phức tạp</li><li>Bundle size lớn</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

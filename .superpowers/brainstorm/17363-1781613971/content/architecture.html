@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Plugin Platform — Architecture Design</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d1a; color: #e0e0f0; font-family: 'Inter', system-ui, sans-serif; padding: 24px; }
+  h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+
+  .layer-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .layer {
+    border-radius: 10px;
+    padding: 14px 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .layer-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+  .layer-content {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .box {
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.4;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .arrow { font-size: 18px; opacity: 0.4; }
+
+  /* Layer colors */
+  .layer-browser { background: rgba(99, 179, 237, 0.06); border-color: rgba(99,179,237,0.25); }
+  .layer-browser .box { background: rgba(99,179,237,0.12); border-color: rgba(99,179,237,0.3); color: #bee3f8; }
+
+  .layer-core { background: rgba(124,106,247,0.06); border-color: rgba(124,106,247,0.25); }
+  .layer-core .box { background: rgba(124,106,247,0.15); border-color: rgba(124,106,247,0.4); color: #c4b8ff; }
+  .layer-core .box.highlight { background: rgba(124,106,247,0.35); border-color: #7c6af7; color: #fff; }
+
+  .layer-plugin { background: rgba(154,230,180,0.06); border-color: rgba(154,230,180,0.25); }
+  .layer-plugin .box { background: rgba(154,230,180,0.12); border-color: rgba(154,230,180,0.3); color: #9ae6b4; }
+  .layer-plugin .box.built-in { opacity: 0.6; }
+
+  .layer-infra { background: rgba(247,164,106,0.06); border-color: rgba(247,164,106,0.25); }
+  .layer-infra .box { background: rgba(247,164,106,0.12); border-color: rgba(247,164,106,0.3); color: #fbd38d; }
+
+  .connector-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #666;
+    margin: -4px 0;
+  }
+  .connector-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #333, transparent); }
+
+  /* Flow section */
+  .flow-section { margin-bottom: 20px; }
+  .flow-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .flow-steps {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    overflow-x: auto;
+  }
+  .flow-step {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    flex: 1;
+    min-width: 120px;
+  }
+  .flow-step-num { font-size: 10px; color: #7c6af7; font-weight: 700; margin-bottom: 4px; }
+  .flow-arrow { display: flex; align-items: center; padding: 0 4px; color: #444; font-size: 16px; }
+
+  /* Manifest */
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #e0e0f0;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .kw { color: #c792ea; }
+  .str { color: #c3e88d; }
+  .key { color: #82aaff; }
+  .comment { color: #546e7a; font-style: italic; }
+  .num { color: #f78c6c; }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #7c6af7;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .tag { display:inline-block; font-size:10px; padding:1px 8px; border-radius:10px; font-weight:600; margin-left:6px; vertical-align:middle; }
+  .tag-new { background: rgba(154,230,180,0.2); color: #9ae6b4; border: 1px solid rgba(154,230,180,0.3); }
+  .tag-phase1 { background: rgba(124,106,247,0.2); color: #c4b8ff; border: 1px solid rgba(124,106,247,0.3); }
+</style>
+</head>
+<body>
+
+<h1>🧩 ERP Plugin Platform — Architecture Design</h1>
+<p class="subtitle">React + NestJS · Dynamic Runtime · DB-backed Registry · Full Extension Model</p>
+
+<!-- LAYER DIAGRAM -->
+<div class="layer-diagram">
+
+  <div class="layer layer-browser">
+    <div class="layer-label">🌐 Browser — React App</div>
+    <div class="layer-content">
+      <div class="box">Shell App<br><small>Layout + Router</small></div>
+      <div class="arrow">→</div>
+      <div class="box highlight">Plugin Loader<br><small>React.lazy()</small></div>
+      <div class="arrow">→</div>
+      <div class="box">Slot Renderer<br><small>inject components</small></div>
+      <div class="arrow">→</div>
+      <div class="box">Event Bus<br><small>pub/sub</small></div>
+    </div>
+  </div>
+
+  <div class="connector-area">
+    <div class="connector-line"></div>
+    <span>REST API / WebSocket</span>
+    <div class="connector-line"></div>
+  </div>
+
+  <div class="layer layer-core">
+    <div class="layer-label">⚙️ Backend — NestJS</div>
+    <div class="layer-content">
+      <div class="box highlight">Plugin Registry<br><small>Module</small></div>
+      <div class="arrow">→</div>
+      <div class="box">Dynamic Module<br><small>Loader</small></div>
+      <div class="arrow">→</div>
+      <div class="box">Hook Manager<br><small>lifecycle events</small></div>
+      <div class="arrow">→</div>
+      <div class="box">Auth / RBAC<br><small>per-plugin perms</small></div>
+    </div>
+  </div>
+
+  <div class="connector-area">
+    <div class="connector-line"></div>
+    <span>Plugin API Contract</span>
+    <div class="connector-line"></div>
+  </div>
+
+  <div class="layer layer-plugin">
+    <div class="layer-label">🔌 Plugins (Local + Git)</div>
+    <div class="layer-content">
+      <div class="box built-in">core-ui<br><small>built-in</small></div>
+      <div class="box built-in">auth<br><small>built-in</small></div>
+      <div class="box">crm<br><small>local</small></div>
+      <div class="box">lms<br><small>local</small></div>
+      <div class="box">project<br><small>local</small></div>
+      <div class="box" style="border-style:dashed;opacity:0.7">hr<br><small>git</small></div>
+      <div class="box" style="border-style:dashed;opacity:0.7">accounting<br><small>git</small></div>
+    </div>
+  </div>
+
+  <div class="connector-area">
+    <div class="connector-line"></div>
+    <span>Prisma ORM</span>
+    <div class="connector-line"></div>
+  </div>
+
+  <div class="layer layer-infra">
+    <div class="layer-label">🗄️ Infrastructure</div>
+    <div class="layer-content">
+      <div class="box">PostgreSQL<br><small>main DB</small></div>
+      <div class="box">Plugin Registry<br><small>table</small></div>
+      <div class="box">Redis<br><small>session + cache</small></div>
+      <div class="box">MinIO / S3<br><small>file storage</small></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PLUGIN MANIFEST -->
+<div class="section-title">Plugin Manifest Contract</div>
+<div class="code-block">
+<span class="comment">// plugins/crm/manifest.json</span><br>
+{<br>
+&nbsp;&nbsp;<span class="key">"id"</span>: <span class="str">"crm"</span>,<br>
+&nbsp;&nbsp;<span class="key">"name"</span>: <span class="str">"CRM"</span>,<br>
+&nbsp;&nbsp;<span class="key">"version"</span>: <span class="str">"1.0.0"</span>,<br>
+&nbsp;&nbsp;<span class="key">"entry"</span>: <span class="str">"./index.tsx"</span>,&nbsp;&nbsp;<span class="comment">// frontend entry</span><br>
+&nbsp;&nbsp;<span class="key">"server"</span>: <span class="str">"./server/index.ts"</span>,&nbsp;<span class="comment">// NestJS module</span><br>
+&nbsp;&nbsp;<span class="key">"permissions"</span>: [<span class="str">"users:read"</span>, <span class="str">"contacts:write"</span>],<br>
+&nbsp;&nbsp;<span class="key">"hooks"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"sidebar"</span>: { <span class="key">"label"</span>: <span class="str">"CRM"</span>, <span class="key">"icon"</span>: <span class="str">"👥"</span>, <span class="key">"order"</span>: <span class="num">10</span> },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"slots"</span>: [<span class="str">"dashboard.top"</span>, <span class="str">"user.profile.actions"</span>]<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<!-- BOOT FLOW -->
+<div class="section-title">Plugin Boot Flow (Runtime)</div>
+<div class="flow-steps">
+  <div class="flow-step">
+    <div class="flow-step-num">01</div>
+    App khởi động<br>query DB lấy danh sách plugin <code>enabled=true</code>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="flow-step-num">02</div>
+    Backend load NestJS DynamicModule cho từng plugin
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="flow-step-num">03</div>
+    Frontend nhận plugin manifest qua <code>/api/plugins/active</code>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="flow-step-num">04</div>
+    React.lazy load plugin bundle, register routes + slots
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="flow-step-num">05</div>
+    Shell render sidebar, dashboard slots theo plugin registry
+  </div>
+</div>
+
+</body>
+</html>

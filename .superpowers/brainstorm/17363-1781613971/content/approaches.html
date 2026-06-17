@@ -1,0 +1,76 @@
+<h2>3 Approaches cho Plugin Platform Architecture</h2>
+<p class="subtitle">Cùng mục tiêu — khác nhau ở cách core app và plugins giao tiếp.</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>🗂️ File-system Loader <span style="font-size:11px;background:#2a2a5a;padding:2px 8px;border-radius:10px;margin-left:6px">Đơn giản nhất</span></h3>
+      <p>App scan thư mục <code>/plugins</code>, đọc <code>manifest.json</code>, load frontend + backend tự động. Git plugin = clone vào folder đó.</p>
+      <div class="mockup" style="margin-top:8px">
+        <div class="mockup-body" style="font-size:11px;padding:8px;min-height:90px">
+          <code style="display:block;background:rgba(0,0,0,0.3);padding:6px;border-radius:4px;line-height:1.7">
+            /plugins<br>
+            &nbsp;&nbsp;/crm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← local<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;manifest.json<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;index.tsx<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;/server<br>
+            &nbsp;&nbsp;/lms &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← git clone
+          </code>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:6px">
+        <div class="pros"><h4>Pros</h4><ul><li>Dễ debug</li><li>Transparent</li><li>Không cần DB cho registry</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Restart để load plugin mới từ git</li><li>Khó track trạng thái enable/disable</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>🗃️ DB-backed Registry + Dynamic Loader <span style="font-size:11px;background:#1a4a2a;padding:2px 8px;border-radius:10px;margin-left:6px">⭐ Recommended</span></h3>
+      <p>Plugin files ở filesystem, nhưng metadata (enabled/disabled, config, version) lưu trong DB. App load theo danh sách từ DB. Git plugin cài qua Admin UI.</p>
+      <div class="mockup" style="margin-top:8px">
+        <div class="mockup-body" style="font-size:11px;padding:8px;min-height:90px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div style="border:1px solid #7c6af7;padding:4px 8px;border-radius:4px">Plugin Files<br><em style="opacity:0.6">/plugins/*</em></div>
+            <div style="opacity:0.6">+</div>
+            <div style="border:1px solid #f7a46a;padding:4px 8px;border-radius:4px">DB Registry<br><em style="opacity:0.6">enabled, config</em></div>
+            <div style="opacity:0.6">→</div>
+            <div style="border:1px solid #6af7a4;padding:4px 8px;border-radius:4px">Plugin Loader<br><em style="opacity:0.6">React.lazy + NestJS DynamicModule</em></div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:6px">
+        <div class="pros"><h4>Pros</h4><ul><li>Bật/tắt qua Admin UI không restart</li><li>Per-plugin config</li><li>Audit log</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Phức tạp hơn A</li><li>Cần DB migration khi thêm field</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>🚌 Event Bus — Maximum Isolation</h3>
+      <p>Core app và plugins KHÔNG import lẫn nhau. Giao tiếp hoàn toàn qua event bus. Plugin chạy trong isolated context.</p>
+      <div class="mockup" style="margin-top:8px">
+        <div class="mockup-body" style="font-size:11px;padding:8px;min-height:90px">
+          <div style="display:flex;gap:6px;align-items:center;justify-content:center">
+            <div style="border:1px solid #aaa;padding:4px 8px;border-radius:4px;text-align:center">Core App</div>
+            <div style="color:#7c6af7;font-size:16px">⇄</div>
+            <div style="border:1px solid #7c6af7;padding:4px 8px;border-radius:4px;background:rgba(124,106,247,0.1);text-align:center">Event Bus<br><em style="opacity:0.6">publish/subscribe</em></div>
+            <div style="color:#7c6af7;font-size:16px">⇄</div>
+            <div style="border:1px solid #aaa;padding:4px 8px;border-radius:4px;text-align:center">Plugins</div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:6px">
+        <div class="pros"><h4>Pros</h4><ul><li>Isolation tốt nhất</li><li>Plugin lỗi không crash app</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Overhead lớn</li><li>Khó type-safe</li><li>Over-engineering cho giai đoạn đầu</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
