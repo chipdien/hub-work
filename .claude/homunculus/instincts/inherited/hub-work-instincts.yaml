@@ -1,0 +1,410 @@
+# Instincts generated from https://github.com/chipdien/hub-work
+# Generated: 2026-06-17T07:42:47.767Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: hub-work-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: chore, feat, docs
+
+## Evidence
+
+- 7 commits analyzed
+- Detected conventional commit pattern
+- Examples: docs: add ERP plugin platform design spec, feat: initialize agent and skill repository structure with comprehensive workflow documentation and support scripts
+
+---
+id: hub-work-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Commit Length
+
+## Action
+
+Write moderate-length commit messages (~62 characters)
+
+## Evidence
+
+- Average commit message length: 62 chars
+- Based on 7 commits
+
+---
+id: hub-work-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: hub-work-import-alias
+trigger: "when importing modules"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Import Alias
+
+## Action
+
+Use path aliases (@/, ~/) instead of relative imports
+
+## Evidence
+
+- Import analysis shows alias pattern
+- Example: import { x } from '@/lib/x'
+
+---
+id: hub-work-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: hub-work-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: hub-work-workflow-add-skill-to-agent
+trigger: "when doing add skill to agent"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Workflow Add Skill To Agent
+
+## Action
+
+Follow the add-skill-to-agent workflow:
+1. Create a new directory under .agent/skills/, .agents/skills/, or .claude/skills/ with the skill name.
+2. Add SKILL.md (skill definition) and optionally DESIGN.md or other documentation.
+3. Add supporting scripts (e.g., scripts/*.js, scripts/*.sh, scripts/*.py) and data files (e.g., data/*.csv) as needed.
+4. If relevant, replicate the skill under multiple agent directories (e.g., .agent/skills/, .agents/skills/, .claude/skills/).
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .agent/skills/*/SKILL.md, .agents/skills/*/SKILL.md, .claude/skills/*/SKILL.md
+
+---
+id: hub-work-workflow-install-or-configure-agent-extension
+trigger: "when doing install or configure agent extension"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chipdien/hub-work
+---
+
+# Hub Work Workflow Install Or Configure Agent Extension
+
+## Action
+
+Follow the install-or-configure-agent-extension workflow:
+1. Add new skill definitions under agent skill directories (e.g., .agents/skills/speckit-*/SKILL.md, .claude/skills/gitnexus/*).
+2. Add or update configuration/manifest files (e.g., .specify/extensions.yml, .specify/integration.json, .specify/integrations/*.manifest.json).
+3. Add workflow scripts and templates (e.g., .specify/scripts/bash/*.sh, .specify/templates/*.md, .specify/workflows/*).
+4. Update documentation files (e.g., AGENTS.md, CLAUDE.md).
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .agents/skills/*/SKILL.md, .claude/skills/*/SKILL.md, .specify/extensions.yml
+
+---
+id: hub-work-instinct-file-naming-camelCase
+trigger: "When creating or renaming a file in the repository"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct File Naming CamelCase
+
+## Action
+
+Name the file using camelCase (e.g., myFile.js)
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.files
+- Consistent with JavaScript conventions
+
+---
+id: hub-work-instinct-function-naming-camelCase
+trigger: "When defining a new function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Function Naming CamelCase
+
+## Action
+
+Name the function using camelCase (e.g., processData)
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.functions
+
+---
+id: hub-work-instinct-class-naming-PascalCase
+trigger: "When defining a new class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Class Naming PascalCase
+
+## Action
+
+Name the class using PascalCase (e.g., DataProcessor)
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.classes
+
+---
+id: hub-work-instinct-constant-naming-SCREAMING_SNAKE_CASE
+trigger: "When defining a constant"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Constant Naming SCREAMING_SNAKE_CASE
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE (e.g., MAX_SIZE)
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.constants
+
+---
+id: hub-work-instinct-import-alias
+trigger: "When importing modules in JavaScript files"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Import Alias
+
+## Action
+
+Use alias import style
+
+## Evidence
+
+- Pattern in codeStyle.importStyle
+
+---
+id: hub-work-instinct-export-named
+trigger: "When exporting modules or functions"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Export Named
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in codeStyle.exportStyle
+
+---
+id: hub-work-instinct-error-handling-try-catch
+trigger: "When handling errors in JavaScript code"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Error Handling Try Catch
+
+## Action
+
+Use try-catch blocks for error handling
+
+## Evidence
+
+- Pattern in errorHandling.style
+
+---
+id: hub-work-instinct-git-commit-conventional
+trigger: "When writing a commit message"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Git Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes such as chore, feat, or docs (e.g., feat: add new feature)
+
+## Evidence
+
+- Seen in commit 'docs: add ERP plugin platform design spec'
+- Seen in commit 'feat: initialize agent and skill repository structure with comprehensive workflow documentation and support scripts'
+- Pattern in commits.prefixes
+
+---
+id: hub-work-instinct-git-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Git Commit Length
+
+## Action
+
+Keep commit message concise, around 60 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength
+
+---
+id: hub-work-instinct-add-skill-to-agent
+trigger: "When someone wants to introduce a new skill or capability for an agent"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Add Skill To Agent
+
+## Action
+
+Create a new directory under .agent/skills/, .agents/skills/, or .claude/skills/ with the skill name; add SKILL.md and supporting scripts/data; replicate as needed
+
+## Evidence
+
+- Workflow: add-skill-to-agent
+- Seen in commits adding .agent/skills/*/SKILL.md and scripts
+
+---
+id: hub-work-instinct-install-or-configure-agent-extension
+trigger: "When someone wants to enable a new agent feature set or integrate a toolkit"
+confidence: 0.88
+domain: workflow
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Install Or Configure Agent Extension
+
+## Action
+
+Add skill definitions, update configuration files in .specify/, add workflow scripts/templates, and update documentation
+
+## Evidence
+
+- Workflow: install-or-configure-agent-extension
+- Seen in commits updating .specify/extensions.yml and related files
+
+---
+id: hub-work-instinct-test-location-separate
+trigger: "When adding or updating tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: chipdien/hub-work
+---
+
+# Hub Work Instinct Test Location Separate
+
+## Action
+
+Place test files in a separate directory from source code
+
+## Evidence
+
+- Pattern in architecture.folderStructure.testLocation
+
